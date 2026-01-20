@@ -8,6 +8,7 @@ export const endpoints = {
   agent_register: "api/admin/create-agent",
   //user
   allUser: "api/agent/get-associated-users",
+  adminGetAllUsers: "api/admin/get-all-user",
   get_users_by_agent: "api/admin/get-users",
   user_register: "api/agent/create-user",
   // brands
@@ -56,8 +57,9 @@ export const endpoints = {
   myFacebookAdAccounts: "api/user/get-all-my-facebook-ad-applications",
   allFacebookAccounts: "api/admin/get-all-facebook-accounts",
   myFacebookAccounts: "api/user/get-all-my-facebook-accounts",
-  createManualFacebookAccount: "api/admin/create-facebook-account",
+  createManualFacebookAccount: "api/admin/create-new-facebook-ad-account",
   allGoogleAccounts: "api/admin/get-all-google-accounts",
   myGoogleAccounts: "api/user/get-all-my-google-accounts",
-  createManualGoogleAccount: "api/admin/create-google-account",
+  createManualGoogleAccount: "api/admin/create-new-google-ad-account",
+  updateFacebookAdAccount: "api/admin/update-facebook-ad-account",
 }

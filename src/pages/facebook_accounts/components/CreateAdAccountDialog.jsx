@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { CheckCircle2, Facebook, Loader2, Plus, Receipt, User, Search, Info, ShieldCheck } from "lucide-react";
-import { fetchUsers } from "@/pages/users/helpers/fetchUsers";
+import { fetchAllUsers } from "../helpers/fetchAllUsers";
 import { createManualAdAccount } from "../helpers/createManualAdAccount";
 import {
     Command,
@@ -52,7 +52,7 @@ const CreateAdAccountDialog = ({ open, onOpenChange, onSuccess }) => {
 
     const { data: usersRes, isLoading: usersLoading } = useQuery({
         queryKey: ["allUsers"],
-        queryFn: () => fetchUsers({ params: { limit: 1000 } }),
+        queryFn: () => fetchAllUsers({ params: { limit: 1000 } }),
         enabled: open,
     });
 
@@ -75,7 +75,8 @@ const CreateAdAccountDialog = ({ open, onOpenChange, onSuccess }) => {
         }
     });
 
-    const depositFee = formData.deposit_amount * 0.03;
+    const commissionRate = selectedUser?.paymentRule?.facebook_commission || 0;
+    const depositFee = formData.deposit_amount * (commissionRate / 100);
     const totalCost = formData.application_fee + formData.deposit_amount + depositFee;
 
     useEffect(() => {
@@ -171,55 +172,63 @@ const CreateAdAccountDialog = ({ open, onOpenChange, onSuccess }) => {
 
                                 <div className="space-y-3">
                                     <Label className="text-sm font-medium">Select User * (Required)</Label>
-                                    <Popover open={userSearchOpen} onOpenChange={setUserSearchOpen}>
-                                        <PopoverTrigger asChild>
-                                            <Button
-                                                variant="outline"
-                                                role="combobox"
-                                                aria-expanded={userSearchOpen}
-                                                className={cn(
-                                                    "w-full justify-between h-11 bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-700",
-                                                    !selectedUser && "text-muted-foreground",
-                                                    errors.user && "border-red-500"
-                                                )}
-                                            >
-                                                {selectedUser
-                                                    ? `${selectedUser.full_name} (${selectedUser.email})`
-                                                    : "Select User"}
-                                                <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                            </Button>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-[500px] p-0" align="start">
-                                            <Command>
-                                                <CommandInput placeholder="Search user..." />
-                                                <CommandList>
-                                                    <CommandEmpty>No user found.</CommandEmpty>
-                                                    <CommandGroup>
-                                                        {users?.map((user) => (
-                                                            <CommandItem
-                                                                key={user._id}
-                                                                value={`${user.full_name} ${user.email}`}
-                                                                onSelect={() => {
-                                                                    setSelectedUser(user);
-                                                                    setUserSearchOpen(false);
-                                                                    if (errors.user) setErrors(prev => ({ ...prev, user: null }));
-                                                                }}
-                                                            >
-                                                                <div className="flex flex-col">
-                                                                    <span className="font-medium">{user.full_name}</span>
-                                                                    <span className="text-xs text-zinc-500">{user.email}</span>
-                                                                </div>
-                                                            </CommandItem>
-                                                        ))}
-                                                    </CommandGroup>
-                                                </CommandList>
-                                            </Command>
-                                        </PopoverContent>
-                                    </Popover>
+                                    <Select
+                                        value={selectedUser?._id || ""}
+                                        onValueChange={(val) => {
+                                            const user = users.find(u => u._id === val);
+                                            setSelectedUser(user);
+                                            if (user?.paymentRule?.facebook_application_fee) {
+                                                setFormData(prev => ({
+                                                    ...prev,
+                                                    application_fee: user.paymentRule.facebook_application_fee
+                                                }));
+                                            }
+                                            if (errors.user) setErrors(prev => ({ ...prev, user: null }));
+                                        }}
+                                    >
+                                        <SelectTrigger className={cn("w-full h-11 bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-700", errors.user && "border-red-500")}>
+                                            <SelectValue placeholder="Select User" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {users?.map((user) => (
+                                                <SelectItem key={user._id} value={user._id}>
+                                                    <div className="flex flex-col text-left">
+                                                        <span className="font-medium">{user.full_name}</span>
+                                                        <span className="text-xs text-zinc-500">{user.email}</span>
+                                                    </div>
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                     {errors.user && <p className="text-xs text-red-500">{errors.user}</p>}
+
+                                    {selectedUser && (
+                                        <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800 rounded-lg">
+                                            <p className="text-sm font-semibold text-blue-800 dark:text-blue-300">
+                                                Selected: <span className="font-normal text-blue-600 dark:text-blue-400">{selectedUser.full_name} ({selectedUser.email})</span>
+                                            </p>
+                                            <p className="text-xs text-zinc-500 mt-1">
+                                                Application Fee: ${selectedUser.paymentRule?.facebook_application_fee || 0} | Facebook Fee: {selectedUser.paymentRule?.facebook_commission || 0}% | Google Fee: {selectedUser.paymentRule?.google_commission || 0}%
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
+
+                        {!selectedUser && (
+                            <div className="flex flex-col items-center justify-center py-4 bg-zinc-50 dark:bg-zinc-800/30 rounded-lg border-2 border-dashed border-zinc-200 dark:border-zinc-700 text-center animate-in fade-in zoom-in duration-300">
+                                <div className="bg-zinc-100 dark:bg-zinc-800 p-2 rounded-full mb-2 ring-1 ring-zinc-200 dark:ring-zinc-700">
+                                    <User className="h-4 w-4 text-zinc-400" />
+                                </div>
+                                <h3 className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 mb-0.5">
+                                    No User Selected
+                                </h3>
+                                <p className="text-[10px] text-zinc-500 max-w-[10rem]">
+                                    Select a user to proceed.
+                                </p>
+                            </div>
+                        )}
 
                         {selectedUser && (
                             <>
@@ -338,7 +347,7 @@ const CreateAdAccountDialog = ({ open, onOpenChange, onSuccess }) => {
                                                 <span className="text-white font-medium">${formData.deposit_amount.toFixed(2)}</span>
                                             </div>
                                             <div className="flex justify-between items-center text-sm text-zinc-400">
-                                                <span>Deposit Fee (3%)</span>
+                                                <span>Deposit Fee ({commissionRate}%)</span>
                                                 <span className="text-orange-400 font-medium">+ ${depositFee.toFixed(2)}</span>
                                             </div>
                                             <div className="h-px bg-zinc-700 my-2"></div>

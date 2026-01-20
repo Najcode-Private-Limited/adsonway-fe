@@ -1,17 +1,16 @@
 import { apiService } from "@/api/api_service/apiService";
 import { endpoints } from "@/api/endpoints";
 
-export const fetchMyAdAccounts = async ({ params }) => {
+export const fetchAllUsers = async ({ params }) => {
     try {
         const apiResponse = await apiService({
-            endpoint: endpoints.myFacebookAccounts,
+            endpoint: endpoints.adminGetAllUsers,
             method: "GET",
             params,
         });
 
         if (apiResponse?.response?.success) {
-            // Check for nested data structure based on recent API response format
-            return apiResponse?.response?.data?.data || apiResponse?.response?.data;
+            return apiResponse?.response?.data;
         }
 
         return [];
