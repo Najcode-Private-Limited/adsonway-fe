@@ -16,7 +16,6 @@ export function Navbar() {
     const userAvatar = getItem("userDisplayPicture");
     const [openProfile, setOpenProfile] = useState(false);
 
-    // Generate initials from name
     const getInitials = (name) => {
         if (!name) return "U";
         return name
