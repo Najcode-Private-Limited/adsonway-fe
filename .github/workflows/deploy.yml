@@ -10,11 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Trigger Vercel Deploy
-        run: |
-          if [ -z "$VERCEL_DEPLOY_HOOK" ]; then
-            echo "Error: VERCEL_DEPLOY_HOOK secret is not set in GitHub repository settings."
-            exit 1
-          fi
-          curl -X POST "$VERCEL_DEPLOY_HOOK"
+        run: curl -X POST "$VERCEL_DEPLOY_HOOK"
         env:
           VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
