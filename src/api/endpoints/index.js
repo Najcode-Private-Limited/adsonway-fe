@@ -62,4 +62,5 @@ export const endpoints = {
   myGoogleAccounts: "api/user/get-all-my-google-accounts",
   createManualGoogleAccount: "api/admin/create-new-google-ad-account",
   updateFacebookAdAccount: "api/admin/update-facebook-ad-account",
+  updateGoogleAdAccount: "api/admin/update-google-ad-account",
 }

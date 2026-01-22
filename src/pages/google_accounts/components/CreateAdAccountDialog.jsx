@@ -126,9 +126,14 @@ const CreateAdAccountDialog = ({ open, onOpenChange }) => {
         e.preventDefault();
         if (!validate()) return;
 
+        const commissionRate = selectedUser?.paymentRule?.google_commission || 0;
+        const depositFee = formData.deposit_amount * (commissionRate / 100);
+
         const payload = {
             user: selectedUser._id,
             ...formData,
+            deposit_fee: depositFee,
+            status: "active"
         };
         mutation.mutate(payload);
     };

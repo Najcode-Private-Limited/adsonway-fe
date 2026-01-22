@@ -87,7 +87,7 @@ const CreateAdAccountDialog = ({ open, onOpenChange, onSuccess }) => {
                 account_id: "",
                 timezone: "",
                 deposit_amount: 0,
-                application_fee: 20,
+                application_fee: 0,
             });
             setSelectedUser(null);
             setErrors({});

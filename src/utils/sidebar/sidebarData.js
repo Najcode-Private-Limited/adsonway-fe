@@ -82,39 +82,6 @@ export const data = {
       roles: ["admin", "user", "agent"],
     },
     {
-      title: "Google",
-      url: "#",
-      icon: Chrome,
-      isActive: true,
-      items: [
-        {
-          title: "Ad Application",
-          url: "/dashboard/google-ad-application",
-          icon: FileText,
-          roles: ["admin"],
-        },
-        {
-          title: "Ad Accounts",
-          url: "/dashboard/google-accounts",
-          icon: FileText,
-          roles: ["admin"],
-        },
-        {
-          title: "Ad Application",
-          url: "/dashboard/google-ad-application",
-          icon: FileText,
-          roles: ["user"],
-        },
-        {
-          title: "Ad Accounts",
-          url: "/dashboard/my-google-accounts",
-          icon: FileText,
-          roles: ["user"],
-        },
-      ],
-      roles: ["admin", "user"],
-    },
-    {
       title: "Facebook",
       url: "#",
       icon: Facebook,
@@ -147,6 +114,40 @@ export const data = {
       ],
       roles: ["admin", "user"],
     },
+    {
+      title: "Google",
+      url: "#",
+      icon: Chrome,
+      isActive: true,
+      items: [
+        {
+          title: "Ad Application",
+          url: "/dashboard/google-ad-application",
+          icon: FileText,
+          roles: ["admin"],
+        },
+        {
+          title: "Ad Accounts",
+          url: "/dashboard/google-accounts",
+          icon: FileText,
+          roles: ["admin"],
+        },
+        {
+          title: "Ad Application",
+          url: "/dashboard/google-ad-application",
+          icon: FileText,
+          roles: ["user"],
+        },
+        {
+          title: "Ad Accounts",
+          url: "/dashboard/my-google-accounts",
+          icon: FileText,
+          roles: ["user"],
+        },
+      ],
+      roles: ["admin", "user"],
+    },
+
   ],
   projects: [
     // {
