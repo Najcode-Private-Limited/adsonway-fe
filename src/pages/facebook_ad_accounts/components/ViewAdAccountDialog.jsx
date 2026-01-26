@@ -160,7 +160,7 @@ const ViewAdAccountDialog = ({ open, onOpenChange, data }) => {
 
                                         <div className="flex justify-between items-end">
                                             <div>
-                                                <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-black mb-1">TOTAL CAPITAL INVESTED</p>
+                                                <span className="text-[14px] font-black text-zinc-600 uppercase">Total Capital Invested</span>
                                             </div>
                                             <div className="text-right">
                                                 <span className="text-3xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">

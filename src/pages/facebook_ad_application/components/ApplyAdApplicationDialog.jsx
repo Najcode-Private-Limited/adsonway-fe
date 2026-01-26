@@ -22,6 +22,7 @@ import { fetchMyWallet } from "@/components/navbar/helpers/fetchMyWallet";
 import { apiService } from "@/api/api_service/apiService";
 import { endpoints } from "@/api/endpoints";
 import { Checkbox } from "@/components/ui/checkbox";
+import { fetchMyAdAccounts } from "../../facebook_ad_accounts/helpers/fetchMyAdAccounts";
 
 const ApplyAdApplicationDialog = ({ open, onOpenChange, onSuccess }) => {
     const queryClient = useQueryClient();
@@ -62,6 +63,13 @@ const ApplyAdApplicationDialog = ({ open, onOpenChange, onSuccess }) => {
             return Array.isArray(data) ? data[0] : data;
         },
         enabled: open,
+    });
+
+    // Fetch Active Facebook Accounts for Existing License
+    const { data: activeAccounts, isLoading: isLoadingAccounts } = useQuery({
+        queryKey: ["myActiveFacebookAccounts"],
+        queryFn: () => fetchMyAdAccounts({ params: { status: "active" } }),
+        enabled: open && formData.licenseType === "Existing License",
     });
 
     const fees = {
@@ -214,6 +222,7 @@ const ApplyAdApplicationDialog = ({ open, onOpenChange, onSuccess }) => {
         const payload = {
             licenseType: formData.licenseType === "New License" ? "new" : "existing",
             licenseNumber: formData.licenseNumber,
+            // If strictly needing the ID for existing, we assume licenseNumber holds it or we handled it in selection
             numberOfPages: parseInt(formData.numberOfPages),
             pageUrls: formData.pageUrls,
             hasFullAdminAccess: formData.hasFullAdminAccess,
@@ -257,7 +266,9 @@ const ApplyAdApplicationDialog = ({ open, onOpenChange, onSuccess }) => {
                             <div className="space-y-3">
                                 <Select
                                     value={formData.licenseType}
-                                    onValueChange={(val) => setFormData(prev => ({ ...prev, licenseType: val }))}
+                                    onValueChange={(val) => {
+                                        setFormData(prev => ({ ...prev, licenseType: val, licenseNumber: "" }));
+                                    }}
                                 >
                                     <SelectTrigger className="bg-white dark:bg-zinc-900 h-11 w-full">
                                         <SelectValue placeholder="Select License Type" />
@@ -267,15 +278,43 @@ const ApplyAdApplicationDialog = ({ open, onOpenChange, onSuccess }) => {
                                         <SelectItem value="Existing License">Existing License</SelectItem>
                                     </SelectContent>
                                 </Select>
-                                <Input
-                                    placeholder="Enter new license number"
-                                    value={formData.licenseNumber}
-                                    onChange={(e) => {
-                                        setFormData(prev => ({ ...prev, licenseNumber: e.target.value }));
-                                        if (errors.licenseNumber) setErrors(prev => ({ ...prev, licenseNumber: null }));
-                                    }}
-                                    className={`bg-white dark:bg-zinc-900 h-11 ${errors.licenseNumber ? "border-red-500" : ""}`}
-                                />
+
+                                {formData.licenseType === "New License" ? (
+                                    <Input
+                                        placeholder="Enter new license number"
+                                        value={formData.licenseNumber}
+                                        onChange={(e) => {
+                                            setFormData(prev => ({ ...prev, licenseNumber: e.target.value }));
+                                            if (errors.licenseNumber) setErrors(prev => ({ ...prev, licenseNumber: null }));
+                                        }}
+                                        className={`bg-white dark:bg-zinc-900 h-11 ${errors.licenseNumber ? "border-red-500" : ""}`}
+                                    />
+                                ) : (
+                                    <Select
+                                        value={formData.licenseNumber}
+                                        onValueChange={(val) => {
+                                            setFormData(prev => ({ ...prev, licenseNumber: val }));
+                                            if (errors.licenseNumber) setErrors(prev => ({ ...prev, licenseNumber: null }));
+                                        }}
+                                        disabled={isLoadingAccounts}
+                                    >
+                                        <SelectTrigger className={`bg-white dark:bg-zinc-900 h-11 w-full ${errors.licenseNumber ? "border-red-500" : ""}`}>
+                                            <SelectValue placeholder={isLoadingAccounts ? "Loading accounts..." : "Select existing license"} />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {activeAccounts?.accounts?.length > 0 ? (
+                                                activeAccounts.accounts.map((account) => (
+                                                    <SelectItem key={account._id} value={account._id}>
+                                                        {account.license_number}
+                                                    </SelectItem>
+                                                ))
+                                            ) : (
+                                                <SelectItem value="no_accounts" disabled>No active accounts found</SelectItem>
+                                            )}
+                                        </SelectContent>
+                                    </Select>
+                                )}
+
                                 {errors.licenseNumber && <p className="text-xs text-red-500">{errors.licenseNumber}</p>}
                             </div>
                         </div>

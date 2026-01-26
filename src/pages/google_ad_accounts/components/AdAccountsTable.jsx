@@ -5,7 +5,7 @@ import Typography from "@/components/typography";
 import { fetchMyAdAccounts } from "../helpers/fetchMyAdAccounts";
 import { Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ViewAdAccountDialog from "@/pages/google_accounts/components/ViewAdAccountDialog";
+import ViewAdAccountDialog from "./ViewAdAccountDialog";
 
 const AdAccountsTable = ({ setTotalRecords, params, onPageChange }) => {
     const [viewDialogOpen, setViewDialogOpen] = useState(false);

@@ -25,6 +25,7 @@ import FacebookAccounts from "@/pages/facebook_accounts";
 import MyFacebookAccounts from "@/pages/facebook_ad_accounts";
 import GoogleAccounts from "@/pages/google_accounts";
 import MyGoogleAccounts from "@/pages/google_ad_accounts";
+import FacebookDeposits from "@/pages/facebook_deposits";
 
 const Router = () => {
   return (
@@ -50,6 +51,7 @@ const Router = () => {
           <Route path="/dashboard/facebook-ad-application" element={<FacebookAdApplication />} />
           <Route path="/dashboard/facebook-accounts" element={<FacebookAccounts />} />
           <Route path="/dashboard/my-facebook-accounts" element={<MyFacebookAccounts />} />
+          <Route path="/dashboard/facebook-deposits" element={<FacebookDeposits />} />
           {/* Blogs */}
           <Route path="/dashboard/blogs" element={<Blogs />} />
           <Route path="/dashboard/blogs/add" element={<BlogEditor />} />

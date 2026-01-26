@@ -111,6 +111,12 @@ export const data = {
           icon: FileText,
           roles: ["user"],
         },
+        {
+          title: "Deposits",
+          url: "/dashboard/facebook-deposits",
+          icon: FileText,
+          roles: ["user"],
+        },
       ],
       roles: ["admin", "user"],
     },

@@ -1,16 +1,16 @@
 import { apiService } from "@/api/api_service/apiService";
 import { endpoints } from "@/api/endpoints";
 
-export const fetchMyAdAccounts = async ({ params }) => {
+export const fetchMyFacebookDeposits = async ({ params }) => {
     try {
         const apiResponse = await apiService({
-            endpoint: endpoints.myGoogleAccounts,
+            endpoint: endpoints.myFacebookAccountTopUpRequests,
             method: "GET",
             params,
         });
 
         if (apiResponse?.response?.success) {
-            return apiResponse?.response?.data?.data || apiResponse?.response?.data;
+            return apiResponse?.response?.data;
         }
 
         return [];

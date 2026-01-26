@@ -384,7 +384,7 @@ const ViewAdAccountDialog = ({ open, onOpenChange, data }) => {
                                     <div className="h-px bg-zinc-900 border-t border-dashed border-zinc-800"></div>
 
                                     <div className="flex justify-between items-center pt-2">
-                                        <span className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em]">Total Capital Invested</span>
+                                        <span className="text-[14px] font-black text-zinc-600 uppercase">Total Capital Invested</span>
                                         <span className="text-3xl font-black text-indigo-400 drop-shadow-sm">
                                             ${totalPaid.toFixed(2)}
                                         </span>
